@@ -1,0 +1,27 @@
+{
+    "manifest_version": 3,
+    "name": "Remind Me",
+    "version": "1.0",
+    "description": "A Chrome extension to set reminders for web pages.",
+    "permissions": [
+      "storage",
+      "contextMenus",
+      "tabs"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "icons": {
+      "48": "icons/icon48.png"
+    },
+    "action": {
+      "default_icon": "icons/icon48.png",
+      "default_popup": "popup.html"
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"]
+      }
+    ]
+  }
