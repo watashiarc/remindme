@@ -53,18 +53,28 @@ chrome.runtime.onInstalled.addListener(() => {
 
     // Close the browser tab
     chrome.tabs.remove(tab.id);
+    
+    // Send a notification
+    const title = tab.title;
+    chrome.notifications.create({
+      type: 'basic',
+      iconUrl: 'icons/icon48.png',
+      title: 'Reminder Notification',
+      message: `${title} has been saved for later`,
+    });
   });
   
-  function handleContextMenuClick(tab, remindDateTime) {
-    // Get the current tab URL
-    const url = tab.url;
+  function handleContextMenuClick(tab, reminderDateTime) {
+  // Get the current tab URL and title
+  const url = tab.url;
+  const title = tab.title;
   
     // Save the reminder to local storage
-    chrome.storage.local.set({ [url]: remindDateTime }, () => {
+    chrome.storage.local.set({ [url]: { title, reminderDateTime } }, () => {
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError);
       } else {
-        console.log(`Reminder set for ${remindDateTime}`);
+        console.log(`Reminder set for ${url} at ${reminderDateTime}`);
       }
     });
   }
@@ -90,14 +100,14 @@ chrome.runtime.onInstalled.addListener(() => {
   // Listen for messages from the popup or content scripts
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'setReminder') {
-      const { url, reminderDateTime } = request;
+      const { url, title, reminderDateTime } = request;
   
       // Save the reminder to local storage
-      chrome.storage.local.set({ [url]: reminderDateTime }, () => {
+      chrome.storage.local.set({ [url]: { title, reminderDateTime } }, () => {
         if (chrome.runtime.lastError) {
           console.error(chrome.runtime.lastError);
         } else {
-          console.log(`Reminder set for ${new Date(reminderDateTime).toLocaleString()}`);
+          console.log(`Reminder set for ${url} at ${new Date(reminderDateTime).toLocaleString()}`);
         }
       });
     } else if (request.action === 'getReminders') {
@@ -108,7 +118,10 @@ chrome.runtime.onInstalled.addListener(() => {
         } else {
           // Convert reminder date to local format
           const localReminders = Object.fromEntries(
-            Object.entries(reminders).map(([url, reminder]) => [url, new Date(reminder).toLocaleString()])
+            Object.entries(reminders).map(([url, reminder]) => {
+              const { title, reminderDateTime} = reminder;
+              return [ url, { title, reminderDateTime: new Date(reminderDateTime).toLocaleString() }];
+            })
           );
           sendResponse(localReminders);
         }
@@ -116,6 +129,17 @@ chrome.runtime.onInstalled.addListener(() => {
   
       // Return true to indicate that the response will be sent asynchronously
       return true;
+    } else if (request.action === 'deleteReminder') {
+      const { url } = request;
+  
+      // Remove the reminder from local storage
+      chrome.storage.local.remove(url, () => {
+        if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError);
+        } else {
+          console.log(`Reminder deleted for ${url}`);
+        }
+      });
     }
   });
   

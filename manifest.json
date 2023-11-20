@@ -4,8 +4,9 @@
     "version": "1.0",
     "description": "A Chrome extension to set reminders for web pages.",
     "permissions": [
-      "storage",
       "contextMenus",
+      "notifications",
+      "storage",
       "tabs"
     ],
     "background": {

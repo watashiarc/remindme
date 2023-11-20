@@ -27,14 +27,22 @@ A simple Chrome extension that allows you to set reminders for web pages.
 ## TODO
 
 - **Management Options for Reminders**
-  - [ ] Open the link associated with a reminder.
-  - [ ] Remove a reminder.
-  - [ ] Reschedule a reminder.
+  - [ ] Open the link associated with a reminder
+  - [ ] Edit/reschedule a reminder
+  - [ ] Paginate through reminders (put a limit on number of reminders per page)
+  - [ ] Search through reminders
+  - [ ] Open all reminders from a certain domain
+  - [ ] Reminder groups (?)
+  - [ ] Auto-remind (background auto-reminding -> tabs get closed and set to be reminded). Then have the ability to suggest reminders saved based on current browsing interest.
 
 - **Better UX**
   - [ ] Improve the styling of the popup for better user experience.
   - [ ] Provide visual feedback when a reminder is successfully set.
 
 - **Disable "Remind Me" Option**
-  - [ ] If a reminder already exists for a page, disable the "Remind Me" option.
+  - [ ] If a reminder already exists for a page, disable the "Remind Me" option. Or show something to indicate it's already saved. Also do not send notification.
   - [ ] Instead, provide a right-click option to manage the existing reminder.
+
+- **Notifications**
+  - [ ] Send notification after some time (in case there's multiple remind mes to avoid spam)
+  - [ ] Provide a setting to configure notifications
